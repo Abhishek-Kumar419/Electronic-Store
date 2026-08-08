@@ -1,8 +1,13 @@
 package com.lcwd.electronic.store.dtos;
 
+import com.lcwd.electronic.store.entities.Role;
+import com.lcwd.electronic.store.validate.ImageNameValid;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -33,8 +38,11 @@ public class UserDto {
     //@patter
     //Custom validator
 
-
+    @ImageNameValid
     private String imageName;
+
+
+    private Set<RoleDto> roles = new HashSet<>();
 
 
 
