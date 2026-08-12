@@ -1,5 +1,6 @@
 package com.lcwd.electronic.store.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lcwd.electronic.store.entities.Role;
 import com.lcwd.electronic.store.validate.ImageNameValid;
 import jakarta.persistence.Column;
@@ -27,6 +28,7 @@ public class UserDto {
     private String email;
 
     @NotBlank(message = "Password is required")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Size(min = 4, max = 6, message = "Invalid gender !!")
