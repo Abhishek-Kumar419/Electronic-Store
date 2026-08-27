@@ -33,6 +33,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        //Authorization
+
+        // Skip JWT validation for login endpoint
+//        if (request.getServletPath().equals("/auth/login")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+
         String requestHeader = request.getHeader("Authorization");
         //Bearer x.y.z
         logger.info(" Header  : {}",requestHeader);
@@ -64,19 +72,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
         //
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            Boolean validatedToken = this.jwtHelper.validateToken(token, userDetails);
-            logger.info("Token valid: {}, Username: {}", validatedToken, username);
-            if (validatedToken) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                logger.info("Validation fails !!");
-            }
-        } else {
-            logger.info("Username from token: {}, Auth: {}", username, SecurityContextHolder.getContext().getAuthentication());
+        if (username!=null && SecurityContextHolder.getContext().getAuthentication() == null){
+
+            //fetch user detail from username
+          UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+          Boolean validatedToken = this.jwtHelper.validateToken(token, userDetails);
+          if (validatedToken){
+
+              //set the authentication
+              UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+              authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+              SecurityContextHolder.getContext().setAuthentication(authentication);
+
+          }else {
+              logger.info("Validation fails !!");
+          }
+
         }
 
         filterChain.doFilter(request, response);
