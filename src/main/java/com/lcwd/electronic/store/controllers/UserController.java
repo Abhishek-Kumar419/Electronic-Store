@@ -7,6 +7,9 @@ import com.lcwd.electronic.store.dtos.UserDto;
 import com.lcwd.electronic.store.exceptions.BadApiRequestException;
 import com.lcwd.electronic.store.services.FileService;
 import com.lcwd.electronic.store.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -46,6 +49,12 @@ public class UserController {
 
     //create
     @PostMapping
+    @Operation(summary = "create new user", description = "new user creation!!")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "success | ok"),
+            @ApiResponse(responseCode = "401", description = "unauthorized"),
+            @ApiResponse(responseCode = "201", description = "new user created")
+    })
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
         UserDto user = userService.createUser(userDto);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
@@ -78,6 +87,7 @@ public class UserController {
 
     //get all
     @GetMapping
+    @Operation(summary = "Get all Users", description = "you can get all the Registered users")
     public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,

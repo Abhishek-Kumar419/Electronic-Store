@@ -38,6 +38,17 @@ public class SecurityConfig {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
 
+    private final String[] PUBLIC_URLS = {
+            "/swagger-ui/**",
+            "/swagger-ui/index.html",
+            "/webjars/**",
+            "/swagger-resources/**",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/v2/api-docs/**"
+    };
+
+
 
 //    @Bean
 //    public UserDetailsService userDetailsService(){
@@ -92,8 +103,10 @@ public class SecurityConfig {
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PUBLIC_URLS).permitAll()
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/auth/google").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.POST,"/users").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
